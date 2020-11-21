@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farmersapp/Components/FlushBarWidget.dart';
 import 'package:farmersapp/Components/data.dart';
 import 'package:farmersapp/Main%20Screens/Profile%20Screens/EditProfileScreen.dart';
+import 'package:farmersapp/Main%20Screens/Profile%20Screens/Interests.dart';
+import 'package:farmersapp/Main%20Screens/Profile%20Screens/about.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -11,6 +13,8 @@ import 'package:farmersapp/Login/LoginScreen.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:farmersapp/Main Screens/Profile Screens/DetailsWidget.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoder/geocoder.dart';
 
 Constants _constants = Constants();
 
@@ -21,12 +25,47 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   FirebaseFirestore _firestoredb;
+  bool locationSpinning = false;
 
   @override
   void initState() {
     super.initState();
     _firestoredb = FirebaseFirestore.instance;
+    getLocation();
     getProfileDetails();
+  }
+
+  void getLocation() async {
+    setState(() {
+      locationSpinning = true;
+    });
+    try {
+      Position position = await Geolocator().getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.bestForNavigation);
+      print(position.latitude);
+      print(position.longitude);
+      final coordinates = Coordinates(position.latitude, position.longitude);
+      var addresses =
+          await Geocoder.local.findAddressesFromCoordinates(coordinates);
+      var first = addresses.first;
+
+      if (first.locality != null && first.adminArea != null) {
+        if (first.subLocality != null) {
+          Provider.of<Data>(context, listen: false).setCity(first.locality);
+          print(first.locality);
+        } else {
+          // Provider.of<Data>(context, listen: false).setCurrentLocation(
+          //     first.locality.toString() + ', ' + first.adminArea);
+          Provider.of<Data>(context, listen: false).setCity(first.adminArea);
+          print(first.adminArea);
+        }
+      }
+    } catch (e) {
+      print('Get Location error : $e');
+    }
+    setState(() {
+      locationSpinning = false;
+    });
   }
 
   Future<void> getProfileDetails() async {
@@ -93,7 +132,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
       }
     });
 
+    // GETTING RATING
+
+    await _firestoredb
+        .collection(provider.user.email)
+        .doc('rating')
+        .get()
+        .then((snapshot) {
+      if (snapshot.data != null) {
+        Map<String, dynamic> datavalue = snapshot.data();
+        datavalue.forEach((key, value) {
+          if (key == 'rating') {
+            provider.setRating(value.toString());
+          } else if (key == 'reviewers') {
+            provider.setReviewers(value.toString());
+          }
+        });
+      }
+    });
+
     // GETTING FOR SALE ITEMS
+
     //     final String name;
     // final String quantity;
     // final String photoUrl;
@@ -101,54 +160,100 @@ class _ProfileScreenState extends State<ProfileScreen> {
     // final String ownerRating;
     // final String costPer50Kg;
 
-    List<String> _name = [];
+    List<String> _ownerName = [];
     List<String> _quantity = [];
-    List<String> _photoUrl = [];
     List<String> _ownerEmail = [];
+    List<String> _vendorEmail = [];
+    List<String> _vendorName = [];
     List<String> _ownerRating = [];
+    List<String> _organization = [];
     List<String> _costPer50Kg = [];
+    List<String> _tag = [];
+    List<String> _rating = [];
+    List<String> _city = [];
     await _firestoredb
         .collection(provider.user.email)
         .doc('items')
         .collection('forsale')
-        .doc('')
         .get()
         .then((snapshot) {
-      if (snapshot.data() != null) {
-        Map<String, dynamic> datavalues = snapshot.data();
-        datavalues.forEach((key, value) {
-          if (key == 'name') {
-            _name.add(value.toString());
-          } else if (key == 'quantity') {
-            _quantity.add(value.toString());
-          } else if (key == 'ownerEmail') {
-            _ownerEmail.add(value.toString());
-          } else if (key == 'ownerRating') {
-            _ownerRating.add(value.toString());
-          } else if (key == 'costPer50Kg') {
-            _costPer50Kg.add(value.toString());
-          }
-          // else if (key == 'photoUrl') {}
-        });
+      if (snapshot.docs != null) {
+        print('forsale');
+        List<dynamic> datadocs = snapshot.docs;
+        for (var _doc in datadocs) {
+          _ownerName.add(_doc['name']);
+          _quantity.add(_doc['quantity']);
+          _tag.add(_doc['tag']);
+          _costPer50Kg.add(_doc['amount']);
+          _city.add(_doc['city']);
+        }
       }
     });
     List<ForSaleItem> _items = [];
     for (int i = 0; i < _quantity.length; i++) {
-      _items.add(ForSaleItem(
-        name: _name[i],
-        quantity: _quantity[i],
-        ownerEmail: _ownerEmail[i],
-        ownerRating: _ownerRating[i],
-        costPer50Kg: _costPer50Kg[i],
-      ));
+      _items.add(
+        ForSaleItem(
+            ownerName: _ownerName[i],
+            quantity: _quantity[i],
+            costPer50Kg: _costPer50Kg[i],
+            tag: _tag[i],
+            city: _city[i]),
+      );
     }
-
     provider.setForSaleItems(_items);
+
+    // GETTING SOLD ITEMS
+
+    _ownerName = [];
+    _vendorName = [];
+    _quantity = [];
+    _costPer50Kg = [];
+    _organization = [];
+    _tag = [];
+    _city = [];
+    await _firestoredb
+        .collection(provider.user.email)
+        .doc('items')
+        .collection('sold')
+        .get()
+        .then((snapshot) {
+      if (snapshot.docs != null) {
+        List<dynamic> datadocs = snapshot.docs;
+        for (var _doc in datadocs) {
+          _ownerName.add(_doc['ownerName']);
+          _vendorName.add(_doc['vendorName']);
+          _quantity.add(_doc['quantity']);
+          _tag.add(_doc['tag']);
+          _organization.add(_doc['organization']);
+          _costPer50Kg.add(_doc['amount']);
+          _city.add(_doc['vendorCity']);
+          _rating.add(_doc['rating']);
+        }
+      }
+    });
+
+    List<SoldItems> _solItem = [];
+    for (int i = 0; i < _ownerName.length; i++) {
+      _solItem.add(
+        SoldItems(
+          ownerName: _ownerName[i],
+          vendorName: _vendorName[i],
+          organization: _organization[i],
+          quantity: _quantity[i],
+          costPer50Kg: _costPer50Kg[i],
+          tag: _tag[i],
+          city: _city[i],
+          rating: _rating[i]
+        ),
+      );
+    }
+    provider.setSoldItems(_solItem);
   }
 
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
+    var provider = Provider.of<Data>(context);
     return Scaffold(
       backgroundColor: _constants.backgroundColorAllScreens,
       endDrawer: _DrawerWidget(),
@@ -156,9 +261,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
         leading: Container(),
         leadingWidth: 0.0,
         backgroundColor: _constants.appBarBackGroundColor,
-        title: Text(
-          'PROFILE',
-          style: _constants.style,
+        title: Row(
+          children: [
+            Text(
+              'PROFILE',
+              style: _constants.style,
+            ),
+            SizedBox(width: 20),
+            Provider.of<Data>(context).currentCity == null
+                ? SizedBox(
+                    height: 15,
+                    width: 15,
+                    child: CircularProgressIndicator(),
+                  )
+                : Center(
+                    child: Text(
+                      '(${Provider.of<Data>(context).currentCity})',
+                      style: _constants.style.copyWith(fontSize: 14),
+                    ),
+                  )
+          ],
         ),
       ),
       body: SafeArea(
@@ -169,7 +291,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
             child: Container(
-              height: screenSize.height,
+              height: provider.occupation == 'Vendor'
+                  ? screenSize.height
+                  : screenSize.height * 1.3,
               width: screenSize.width,
               child: Stack(
                 children: [
@@ -281,10 +405,21 @@ class _ProfileDetails extends StatelessWidget {
                       Text(
                         provider.occupation ?? 'Occuopation not set',
                         style: _constants.style.copyWith(
-                            fontSize: provider.occupation == null ? 10 : 18,
-                            color: Colors.grey,
-                            letterSpacing: 2),
+                          fontSize: provider.occupation == null ? 10 : 18,
+                          color: Colors.grey,
+                          letterSpacing: 2,
+                        ),
                       ),
+                      if (provider.occupation == 'Vendor' &&
+                          provider.occupation != null)
+                        Text(
+                          provider.organization ?? 'Set Organization',
+                          style: _constants.style.copyWith(
+                            fontSize: provider.organization == null ? 10 : 18,
+                            color: Colors.grey,
+                            letterSpacing: 2,
+                          ),
+                        ),
                       SizedBox(height: 20),
                       Material(
                         elevation: 50,
@@ -367,6 +502,7 @@ class _DrawerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
+    var provider = Provider.of<Data>(context);
     Constants _constants = Constants();
     return Drawer(
       child: SingleChildScrollView(
@@ -408,16 +544,21 @@ class _DrawerWidget extends StatelessWidget {
                     ),
                     Divider(),
                     ListTile(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                            context, MySlide(page: InterestsScreen()));
+                      },
                       title: Text(
-                        'CHATS',
+                        'INTERESTS',
                         style: _constants.style.copyWith(fontSize: 18),
                       ),
                       trailing: Icon(Icons.chat),
                     ),
                     Divider(),
                     ListTile(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(context, MySlide(page: AboutScreen()));
+                      },
                       title: Text(
                         'ABOUT',
                         style: _constants.style.copyWith(fontSize: 18),
@@ -429,6 +570,8 @@ class _DrawerWidget extends StatelessWidget {
                       onTap: () {
                         FirebaseAuth.instance.signOut();
                         GoogleSignIn().signOut();
+                        Provider.of<Data>(context, listen: false)
+                            .setEverythingToNull();
                         Navigator.push(
                           context,
                           MySlide(

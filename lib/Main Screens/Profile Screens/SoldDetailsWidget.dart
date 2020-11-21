@@ -1,22 +1,20 @@
-import 'package:farmersapp/Components/MySlide.dart';
-import 'package:farmersapp/Components/alertboxwidget.dart';
-import 'package:farmersapp/Main%20Screens/Profile%20Screens/AllSaleItemsDisplayScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import 'package:farmersapp/Components/MySlide.dart';
+import 'package:farmersapp/Components/alertboxwidget.dart';
 import 'package:farmersapp/Components/constants.dart';
 import 'package:farmersapp/Components/data.dart';
+import 'package:farmersapp/Main%20Screens/Profile%20Screens/AllSoldItemsDisplayScreen.dart';
 
 Constants _constants = Constants();
 AlertBoxWidget _alertBoxWidget = AlertBoxWidget();
 
-class SaleDetailsWidget extends StatelessWidget {
+class SoldDetailsWidget extends StatelessWidget {
   final bool isLessThan3;
-  const SaleDetailsWidget({
+  const SoldDetailsWidget({
     Key key,
     this.isLessThan3,
   }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
@@ -37,7 +35,7 @@ class SaleDetailsWidget extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  'FOR SALE',
+                  'CLOSED DEALS',
                   style: _constants.style.copyWith(
                     fontSize: 20,
                     color: Colors.blueAccent,
@@ -52,18 +50,20 @@ class SaleDetailsWidget extends StatelessWidget {
                         : Navigator.push(
                             context,
                             MySlide(
-                              page: AllSaleItemsDisplayScreen(),
+                              page: AllSoldItemsDisplayScreen(),
                             ),
                           );
                   },
-                  child: Text(
-                    isLessThan3 ? 'ADD' : 'VIEW MORE',
-                    style: _constants.style.copyWith(
-                      color: Colors.blueAccent,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  ),
+                  child: isLessThan3 == false
+                      ? Text(
+                          'VIEW MORE',
+                          style: _constants.style.copyWith(
+                            color: Colors.blueAccent,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                        )
+                      : SizedBox(),
                 ),
               ],
             ),
@@ -71,19 +71,21 @@ class SaleDetailsWidget extends StatelessWidget {
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: isLessThan3
-                  ? Row(
-                      children: [
-                        for (int i = 0; i < provider.forSaleItems.length; i++)
-                          _ForSaleDetailsContainer(
-                            item: provider.forSaleItems[i],
-                          )
-                      ],
-                    )
+                  ? provider.soldItems.length != 0
+                      ? Row(
+                          children: [
+                            for (int i = 0; i < provider.soldItems.length; i++)
+                              _SoldDetailsContainer(
+                                item: provider.soldItems[i],
+                              )
+                          ],
+                        )
+                      : Container()
                   : Row(
                       children: [
                         for (int i = 0; i < 3; i++)
-                          _ForSaleDetailsContainer(
-                            item: provider.forSaleItems[i],
+                          _SoldDetailsContainer(
+                            item: provider.soldItems[i],
                           )
                       ],
                     ),
@@ -95,15 +97,16 @@ class SaleDetailsWidget extends StatelessWidget {
   }
 }
 
-class _ForSaleDetailsContainer extends StatelessWidget {
-  final ForSaleItem item;
-  const _ForSaleDetailsContainer({
+class _SoldDetailsContainer extends StatelessWidget {
+  final SoldItems item;
+  const _SoldDetailsContainer({
     Key key,
     this.item,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<Data>(context);
     return Padding(
       padding: const EdgeInsets.only(right: 20.0),
       child: Material(
@@ -126,13 +129,14 @@ class _ForSaleDetailsContainer extends StatelessWidget {
                     style: _constants.style.copyWith(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
-                        letterSpacing: 1.3),
+                        letterSpacing: 1.3,
+                        color: Colors.redAccent),
                   ),
                   Spacer(),
                   Text(
-                    'FOR SALE',
+                    'SOLD',
                     style: _constants.style.copyWith(
-                      color: Colors.green,
+                      color: Colors.redAccent,
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
                     ),
@@ -140,16 +144,47 @@ class _ForSaleDetailsContainer extends StatelessWidget {
                 ],
               ),
               SizedBox(height: 10),
-              Text('Quantity:  ${item.quantity}', style: _constants.style),
-              SizedBox(height: 5),
-              Text(
-                'Cost:  ₹ ${item.costPer50Kg} per kg.',
-                style: _constants.style,
-              ),
-              SizedBox(height: 5),
-              Text(
-                'City:  ${item.city}',
-                style: _constants.style,
+              Row(
+                mainAxisAlignment: provider.occupation == 'Farmer'
+                    ? MainAxisAlignment.start
+                    : MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Quantity:  ${item.quantity}',
+                          style: _constants.style),
+                      SizedBox(height: 5),
+                      if (provider.occupation != 'Farmer')
+                        Text(
+                          'Farmer: ${item.ownerName}',
+                          style: _constants.style,
+                        ),
+                      if (provider.occupation == 'Farmer')
+                        Text(
+                          item.organization == null
+                              ? 'Organization: Org'
+                              : 'Organization: ${item.organization}',
+                          style: _constants.style,
+                        ),
+                      SizedBox(height: 5),
+                      Text('City: ${item.city}', style: _constants.style),
+                    ],
+                  ),
+                  if (provider.occupation != 'Farmer')
+                    Row(
+                      children: [
+                        Text(
+                          '${item.rating}',
+                          style: _constants.style.copyWith(fontSize: 16),
+                        ),
+                        Icon(
+                          Icons.star,
+                          color: Colors.yellow[900],
+                        )
+                      ],
+                    )
+                ],
               ),
             ],
           ),

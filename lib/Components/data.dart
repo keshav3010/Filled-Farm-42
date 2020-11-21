@@ -9,15 +9,51 @@ class Data extends ChangeNotifier {
   String phoneNumber;
   String currentLanguage = 'en';
   String translatedText;
-  Size screenSize;
   String type;
   String occupation;
   String selectedTag;
   String enteredQuantity;
   String enteredAmount;
   String selectedOccupation;
+  String rating;
+  String currentCity;
+  String reviewers;
+  String organization;
+  bool loggedAndLoaded = false;
+
   List<String> tags = [];
   List<ForSaleItem> forSaleItems = [];
+  List<SoldItems> soldItems = [];
+
+  void setSoldItems(List<SoldItems> _si) {
+    soldItems = _si;
+    notifyListeners();
+  }
+
+  void setOrganization(String _org) {
+    organization = _org;
+    notifyListeners();
+  }
+
+  void setCity(String _c) {
+    currentCity = _c;
+    notifyListeners();
+  }
+
+  void setLoggedAndLoaded(bool _stat) {
+    loggedAndLoaded = _stat;
+    notifyListeners();
+  }
+
+  void setRating(String _ra) {
+    rating = _ra;
+    notifyListeners();
+  }
+
+  void setReviewers(String _re) {
+    reviewers = _re;
+    notifyListeners();
+  }
 
   void setQuantity(String _qua) {
     enteredQuantity = _qua;
@@ -70,5 +106,23 @@ class Data extends ChangeNotifier {
   void setCurrentLanguage(String _lang) {
     currentLanguage = Languagelist.langs[_lang];
     notifyListeners();
+  }
+
+  void setEverythingToNull() {
+    user = null;
+    phoneNumber = null;
+    currentLanguage = null;
+    translatedText = null;
+    type = null;
+    occupation = null;
+    selectedTag = null;
+    enteredQuantity = null;
+    enteredAmount = null;
+    selectedOccupation = null;
+    rating = null;
+    currentCity = null;
+    reviewers = null;
+    organization = null;
+    loggedAndLoaded = null;
   }
 }

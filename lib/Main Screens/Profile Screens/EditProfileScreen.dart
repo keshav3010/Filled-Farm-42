@@ -112,6 +112,46 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                   ),
                 ),
+                if (provider.occupation == 'Vendor' &&
+                    provider.occupation != null)
+                  Material(
+                    elevation: 50,
+                    color: Colors.transparent,
+                    child: Container(
+                      height: 150,
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      decoration: BoxDecoration(
+                          color: Colors.grey[900],
+                          borderRadius: BorderRadius.circular(20)),
+                      margin: EdgeInsets.only(top: 50),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                'YOUR ORGANIZATION',
+                                style: _constants.style.copyWith(
+                                    fontSize: 20, color: Colors.blueAccent),
+                              ),
+                              Spacer(),
+                              TextButton(
+                                  onPressed: () {
+                                    _alertBoxWidget.setOrganization(context);
+                                  },
+                                  child: Text(
+                                    'CHANGE',
+                                    style: _constants.style.copyWith(
+                                        fontSize: 17, color: Colors.blueAccent),
+                                  ))
+                            ],
+                          ),
+                          _OrganizationStream(),
+                        ],
+                      ),
+                    ),
+                  ),
                 Material(
                   elevation: 50,
                   color: Colors.transparent,
@@ -162,6 +202,52 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 }
 
+class _OrganizationStream extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    var provider = Provider.of<Data>(context, listen: false);
+    return StreamBuilder<DocumentSnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection(provider.user.email)
+          .doc('organization')
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Center(
+            child: CircularProgressIndicator(
+              backgroundColor: Colors.lightBlueAccent,
+            ),
+          );
+        } else if (snapshot.hasError) {
+          return Center(
+            child: CircularProgressIndicator(
+              backgroundColor: Colors.lightBlueAccent,
+            ),
+          );
+        }
+        if (!snapshot.data.exists) {
+          return Text("Not Set", style: _constants.style);
+        }
+        String _name;
+        Map<String, dynamic> datavalues = snapshot.data.data();
+        datavalues.forEach((key, value) {
+          if (key.toString() == 'organization') {
+            if (value.toString() == 'null' || value.toString() == null) {
+              _name = 'Set Name';
+            } else {
+              _name = value.toString();
+            }
+          }
+        });
+        return Text(
+          _name,
+          style: _constants.style.copyWith(fontSize: 18),
+        );
+      },
+    );
+  }
+}
+
 class _NumberStream extends StatelessWidget {
   const _NumberStream({Key key}) : super(key: key);
 
@@ -188,7 +274,7 @@ class _NumberStream extends StatelessWidget {
           );
         }
         if (!snapshot.data.exists) {
-          return Text("Not Set");
+          return Text("Not Set", style: _constants.style);
         }
         String _number;
         Map<String, dynamic> datavalues = snapshot.data.data();

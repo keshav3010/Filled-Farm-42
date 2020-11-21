@@ -5,7 +5,7 @@ class Constants {
   final backgroundColorLogin = Color(0xFF111C28);
   final backgroundColorAllScreens = Color(0xFF121212);
   final appBarBackGroundColor = Color(0xFF13161D);
-  final profilePictureCircleColor = Color(0xFF3700B3);
+  final profilePictureCircleColor = Colors.blueAccent; //Color(0xFF3700B3);
   final style = GoogleFonts.montserrat();
   final List<String> occupation = ['Farmer', 'Vendor'];
   final List<String> cropTypes = [
@@ -35,16 +35,49 @@ class Constants {
   ];
 }
 
-class ForSaleItem {
-  final String name;
+class SoldItems {
+  final String ownerName;
+  final String vendorName;
+  final String tag;
   final String quantity;
+  final String city;
+  final String rating;
+  final String photoUrl;
+  final String ownerEmail;
+  final String vendorEmail;
+  final String ownerRating;
+  final String costPer50Kg;
+  final String organization;
+  SoldItems({
+    this.ownerName,
+    this.vendorName,
+    this.tag,
+    this.quantity,
+    this.city,
+    this.photoUrl,
+    this.ownerEmail,
+    this.vendorEmail,
+    this.ownerRating,
+    this.costPer50Kg,
+    this.organization,
+    this.rating
+  });
+}
+
+class ForSaleItem {
+  final String ownerName;
+  final String tag;
+  final String quantity;
+  final String city;
   final String photoUrl;
   final String ownerEmail;
   final String ownerRating;
   final String costPer50Kg;
   ForSaleItem({
-    this.name,
+    this.ownerName,
+    this.tag,
     this.quantity,
+    this.city,
     this.photoUrl,
     this.ownerEmail,
     this.ownerRating,

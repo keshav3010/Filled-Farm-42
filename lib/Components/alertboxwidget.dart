@@ -443,6 +443,90 @@ class AlertBoxWidget {
     );
   }
 
+  Future<bool> setOrganization(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(25.0),
+          ), //this right here
+          child: Container(
+            height: 220,
+            width: MediaQuery.of(context).size.width * 0.9,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Text(
+                    'SET ORGANIZATION !',
+                    textAlign: TextAlign.center,
+                    style: Constants().style.copyWith(
+                          fontSize: 20,
+                          color: Colors.red[900],
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 2,
+                        ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                Container(
+                  margin: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.grey[600],
+                      width: 2,
+                    ),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: TextField(
+                    onChanged: (value) {
+                      Provider.of<Data>(context, listen: false)
+                          .setOrganization(value);
+                    },
+                    style: _constants.style.copyWith(color: Colors.black),
+                    cursorColor: Colors.black,
+                    keyboardType: TextInputType.text,
+                    textAlign: TextAlign.center,
+                    decoration: InputDecoration(
+                      hintText: 'Enter Organization name',
+                      hintStyle: _constants.style.copyWith(color: Colors.black),
+                      border: InputBorder.none,
+                    ),
+                  ),
+                ),
+                Center(
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.resolveWith(
+                            (states) => _constants.appBarBackGroundColor)),
+                    onPressed: () {
+                      var provider = Provider.of<Data>(context, listen: false);
+                      FirebaseFirestore _firebasedb =
+                          FirebaseFirestore.instance;
+                      provider.organization != null
+                          ? _firebasedb
+                              .collection(provider.user.email)
+                              .doc('organization')
+                              .set({'organization': provider.organization})
+                          : ShowFlushBar().showFlushBar(context, 'Alert',
+                              'Organization Name should not be empty');
+                      Navigator.pop(context);
+                    },
+                    child: Text('SET',
+                        style: _constants.style.copyWith(fontSize: 18)),
+                  ),
+                )
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Future<bool> addSaleItem(BuildContext context) {
     return showDialog(
       context: context,
@@ -531,10 +615,10 @@ class AlertBoxWidget {
                     },
                     style: _constants.style.copyWith(color: Colors.black),
                     cursorColor: Colors.black,
-                    keyboardType: TextInputType.phone,
+                    keyboardType: TextInputType.text,
                     textAlign: TextAlign.center,
                     decoration: InputDecoration(
-                      labelText: 'ENTER QUANTITY',
+                      labelText: 'Quantity in Kg',
                       contentPadding: EdgeInsets.only(left: 15),
                       labelStyle:
                           _constants.style.copyWith(color: Colors.black),
@@ -559,10 +643,10 @@ class AlertBoxWidget {
                     },
                     style: _constants.style.copyWith(color: Colors.black),
                     cursorColor: Colors.black,
-                    keyboardType: TextInputType.phone,
+                    keyboardType: TextInputType.number,
                     textAlign: TextAlign.center,
                     decoration: InputDecoration(
-                      labelText: 'ENTER AMOUNT',
+                      labelText: 'Amount per 50 Kg.',
                       contentPadding: EdgeInsets.only(left: 15),
                       labelStyle:
                           _constants.style.copyWith(color: Colors.black),
@@ -575,7 +659,7 @@ class AlertBoxWidget {
                     style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.resolveWith(
                             (states) => _constants.appBarBackGroundColor)),
-                    onPressed: () {
+                    onPressed: () async {
                       var provider = Provider.of<Data>(context, listen: false);
                       FirebaseFirestore _firebasedb =
                           FirebaseFirestore.instance;
@@ -583,8 +667,41 @@ class AlertBoxWidget {
                       if (provider.selectedTag != null &&
                           provider.enteredAmount != null &&
                           provider.enteredQuantity != null) {
+                        await _firebasedb
+                            .collection(provider.user.email)
+                            .doc('items')
+                            .collection('forsale')
+                            .doc(provider.selectedTag)
+                            .set({
+                          'tag': provider.selectedTag,
+                          'name': provider.user.displayName,
+                          'phoneNumber': provider.user.phoneNumber,
+                          'email': provider.user.email,
+                          'quantity': provider.enteredQuantity,
+                          'amount': provider.enteredAmount,
+                          'rating': provider.rating,
+                          'reviewers': provider.reviewers,
+                          'city': provider.currentCity ?? 'City',
+                          'status': 'forsale',
+                        });
+                        await _firebasedb
+                            .collection('global')
+                            .doc(
+                                '${provider.user.email}-${provider.selectedTag}')
+                            .set({
+                          'tag': provider.selectedTag,
+                          'name': provider.user.displayName,
+                          'phoneNumber': provider.user.phoneNumber,
+                          'email': provider.user.email,
+                          'quantity': provider.enteredQuantity,
+                          'amount': provider.enteredAmount,
+                          'rating': provider.rating,
+                          'city': provider.currentCity ?? 'City',
+                          'reviewers': provider.reviewers,
+                          'status': 'forsale',
+                        });
 
-                        // _firebasedb.collection(collectionPath)
+                        Navigator.pop(context);
                       } else if (provider.selectedTag == null) {
                         _showFlushBar.showFlushBar(
                             context, "Alert", 'Select a tag');
