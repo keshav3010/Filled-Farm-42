@@ -11,7 +11,7 @@ Team 42 have been active for around a year, been develiping various projects, bu
 knowledge and time we have, everything for a better future.
 
 ### Members
-**S. PREM RAJ**  (TEAM LEAD) ( MOBILE DEVELOPER ) \
+**S. PREM RAJ**  (**TEAM LEAD**) ( MOBILE DEVELOPER ) \
 **E. KESHAV** ( MEMBER ) ( MACHINE LEARNING ENGINEER ) \
 **S. LOKESH** ( MEMBER ) ( WEB DEVELOPER ) 
 
