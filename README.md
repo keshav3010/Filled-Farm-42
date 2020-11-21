@@ -32,7 +32,10 @@ knowledge and time we have, everything for a better future.
 
 ### Applications Used
 1) VS Code
-2) Sublime Text Editor 
+2) Spyder
+3) Anaconda
+4) Sublime Text Editor 
+
 
 
 ### Model Repo Link:
