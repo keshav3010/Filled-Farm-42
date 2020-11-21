@@ -11,28 +11,28 @@ Team 42 have been active for around a year, been develiping various projects, bu
 knowledge and time we have, everything for a better future.
 
 ### Members
-**S. PREM RAJ**  (TEAM LEAD) ( MOBILE DEVELOPER )
-**E. KESHAV** ( MEMBER ) ( MACHINE LEARNING ENGINEER )
-**S. LOKESH** ( MEMBER ) ( WEB DEVELOPER )
+**S. PREM RAJ**  (TEAM LEAD) ( MOBILE DEVELOPER )\
+**E. KESHAV** ( MEMBER ) ( MACHINE LEARNING ENGINEER )\
+**S. LOKESH** ( MEMBER ) ( WEB DEVELOPER )\
 
 ## Tech Stack used in Filled Farm
 
 ### Mobile 
-1) Flutter & Dart
-2) Firebase Database
+1) Flutter & Dart\
+2) Firebase Database\
 
 ### Web
-1) HTML
-2) CSS
-3) JS
-4) Firebase Database
+1) HTML\
+2) CSS\
+3) JS\
+4) Firebase Database\
 
 ### Machine Learning
-1) Python
+1) Python\
 
 ### Applications Used
-1) VS Code
-2) Sublime Text Editor
+1) VS Code\
+2) Sublime Text Editor\
 
 
 **Model Repo Link:**\ https://github.com/keshav3010/Filled_farm
