@@ -45,12 +45,12 @@ https://github.com/keshav3010/Filled_farm
 ## Mobile App UI
 
 <p float="justified">
-  <img src="https://github.com/Filled-Farm/Filled-Farm-42/blob/master/assets/screenshots/profile.jpg" align="left" height="535" width="270" />
+  <img src="https://github.com/Filled-Farm/Filled-Farm-42/blob/master/assets/screenshots/farmerprofile1.jpg" align="left" height="535" width="270" />
+  <img src="https://github.com/Filled-Farm/Filled-Farm-42/blob/master/assets/screenshots/farmerprofile2.jpg" align="left" height="535" width="270" />
+  <img src="https://github.com/Filled-Farm/Filled-Farm-42/blob/master/assets/screenshots/vendorprofile.jpg" align="left" height="535" width="270" />
   <img src="https://github.com/Filled-Farm/Filled-Farm-42/blob/master/assets/screenshots/drawer.jpg" align="left" height="535" width="270" />
   <img src="https://github.com/Filled-Farm/Filled-Farm-42/blob/master/assets/screenshots/editprofile.jpg" align="left" height="535" width="270" />
-  <img src="https://github.com/Filled-Farm/Filled-Farm-42/blob/master/assets/screenshots/selectgropdialog.jpg" align="left" height="535" width="270" />
-  <img src="https://github.com/Filled-Farm/Filled-Farm-42/blob/master/assets/screenshots/setoccupationdialog.jpg" align="left" height="535" width="270" />
-  <img src="https://github.com/Filled-Farm/Filled-Farm-42/blob/master/assets/screenshots/settags.jpg" align="left" height="535" width="270" />
-  <img src="https://github.com/Filled-Farm/Filled-Farm-42/blob/master/assets/screenshots/addsaleitem.jpg" align="left" height="535" width="270" />
+  <img src="https://github.com/Filled-Farm/Filled-Farm-42/blob/master/assets/screenshots/PublicPosts.jpg" align="left" height="535" width="270" />
+  <img src="https://github.com/Filled-Farm/Filled-Farm-42/blob/master/assets/screenshots/interests.jpg" align="left" height="535" width="270" />
   <br />
 </p>
