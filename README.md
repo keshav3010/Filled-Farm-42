@@ -13,9 +13,9 @@ knowledge and time we have, everything for a better future.
 ### Members
 **S. PREM RAJ**  (TEAM LEAD) ( MOBILE DEVELOPER ) \
 **E. KESHAV** ( MEMBER ) ( MACHINE LEARNING ENGINEER ) \
-**S. LOKESH** ( MEMBER ) ( WEB DEVELOPER ) \
+**S. LOKESH** ( MEMBER ) ( WEB DEVELOPER ) 
 
-## Tech Stack used in Filled Farm
+## Tech Stack 
 
 ### Mobile 
 1) Flutter & Dart 
@@ -28,15 +28,15 @@ knowledge and time we have, everything for a better future.
 4) Firebase Database 
 
 ### Machine Learning
-1) Python \
+1) Python 
 
 ### Applications Used
-1) VS Code \
-2) Sublime Text Editor \
+1) VS Code
+2) Sublime Text Editor 
 
 
 ### Model Repo Link:
-https://github.com/keshav3010/Filled_farm \
+https://github.com/keshav3010/Filled_farm 
 
 
 ## Mobile App UI
