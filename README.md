@@ -38,7 +38,7 @@ knowledge and time we have, everything for a better future.
 
 
 
-### Model Repo Link:
+### ML Model Repo:
 https://github.com/keshav3010/Filled_farm 
 
 
