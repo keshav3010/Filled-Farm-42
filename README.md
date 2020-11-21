@@ -3,6 +3,9 @@
 It serves as a common interface for farmers and vendors.
 
 
+Model Repo Link: https://github.com/keshav3010/Filled_farm
+
+
 <p float="justified">
   <img src="https://github.com/Filled-Farm/Filled-Farm-42/blob/master/assets/screenshots/profile.jpg" align="left" height="535" width="270" />
   <img src="https://github.com/Filled-Farm/Filled-Farm-42/blob/master/assets/screenshots/drawer.jpg" align="left" height="535" width="270" />
