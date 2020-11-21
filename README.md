@@ -2,7 +2,7 @@
 
 
 ## About
-WE Team 42 bring you our product/application Filled Farm.
+We Team 42 bring you our product/application Filled Farm.
 Filled farm is a mobile/web application which acts as an interface between farmers and vendors directly without the need for middlemen. It comes wIth astunning UI, easy
 access yet efficient features and a seamless user experience. 
 
